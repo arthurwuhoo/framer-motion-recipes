@@ -10,6 +10,12 @@ let images = [
   "/images/4.jpeg",
   "/images/5.jpeg",
   "/images/6.jpeg",
+  "/images/1.jpeg?",
+  "/images/2.jpeg?",
+  "/images/3.jpeg?",
+  "/images/4.jpeg?",
+  "/images/5.jpeg?",
+  "/images/6.jpeg?",
   "/images/1.jpeg?1",
   "/images/2.jpeg?1",
   "/images/3.jpeg?1",
@@ -22,31 +28,25 @@ let images = [
   "/images/4.jpeg?2",
   "/images/5.jpeg?2",
   "/images/6.jpeg?2",
-  "/images/1.jpeg?3",
-  "/images/2.jpeg?3",
-  "/images/3.jpeg?3",
-  "/images/4.jpeg?3",
-  "/images/5.jpeg?3",
-  "/images/6.jpeg?3",
 ];
 
 let collapsedAspectRatio = 1 / 3;
 let fullAspectRatio = 3 / 2;
-let margin = 12;
 let gap = 2;
+let margin = 12;
 
 export default function Page() {
   let [index, setIndex] = useState(0);
 
   useKeypress("ArrowRight", () => {
-    if (index < images.length - 1) {
+    if (index + 1 < images.length) {
       setIndex(index + 1);
     }
   });
 
   useKeypress("ArrowLeft", () => {
     if (index > 0) {
-      setIndex(index - 1);
+      setIndex((i) => i - 1);
     }
   });
 
@@ -96,46 +96,42 @@ export default function Page() {
             </AnimatePresence>
           </div>
 
-          <div className="absolute inset-x-0 bottom-6 flex h-14 justify-center overflow-hidden">
+          <div className="absolute inset-x-0 bottom-6 flex justify-center overflow-hidden">
             <motion.div
               initial={false}
               animate={{
                 x: `-${
                   index * 100 * (collapsedAspectRatio / fullAspectRatio) +
-                  margin +
-                  index * gap
+                  index * gap +
+                  margin
                 }%`,
               }}
-              style={{
-                aspectRatio: fullAspectRatio,
-                gap: `${gap}%`,
-              }}
-              className="flex"
+              style={{ aspectRatio: fullAspectRatio, gap: `${gap}%` }}
+              className="flex h-14"
             >
               {images.map((image, i) => (
                 <motion.button
+                  key={image}
                   onClick={() => setIndex(i)}
-                  initial={false}
                   whileHover={{ opacity: 1 }}
+                  initial={false}
                   animate={i === index ? "active" : "inactive"}
                   variants={{
                     active: {
-                      aspectRatio: fullAspectRatio,
                       marginLeft: `${margin}%`,
                       marginRight: `${margin}%`,
                       opacity: 1,
+                      aspectRatio: fullAspectRatio,
                     },
                     inactive: {
-                      aspectRatio: collapsedAspectRatio,
-                      marginLeft: 0,
-                      marginRight: 0,
+                      marginLeft: "0%",
+                      marginRight: "0%",
                       opacity: 0.5,
+                      aspectRatio: collapsedAspectRatio,
                     },
                   }}
-                  className="shrink-0"
-                  key={image}
                 >
-                  <img src={image} className="h-full object-cover" />
+                  <motion.img src={image} className="h-full object-cover" />
                 </motion.button>
               ))}
             </motion.div>

@@ -18,20 +18,20 @@ export default function Email() {
   const [messages, setMessages] = useState([...Array(9).keys()]);
   const [selectedMessages, setSelectedMessages] = useState([]);
 
+  function toggleMessage(mid) {
+    if (selectedMessages.includes(mid)) {
+      setSelectedMessages((messages) => messages.filter((id) => id !== mid));
+    } else {
+      setSelectedMessages((messages) => [mid, ...messages]);
+    }
+  }
+
   function addMessage() {
     let newId = (messages.at(-1) || 0) + 1;
     setMessages((messages) => [...messages, newId]);
   }
 
-  function toggleMessage(mid) {
-    if (selectedMessages.includes(mid)) {
-      setSelectedMessages((messages) => messages.filter((id) => id !== mid));
-    } else {
-      setSelectedMessages((messages) => [...messages, mid]);
-    }
-  }
-
-  function archiveSelectedMessages() {
+  function archiveMessages() {
     setMessages((messages) =>
       messages.filter((id) => !selectedMessages.includes(id))
     );
@@ -51,7 +51,7 @@ export default function Email() {
                 <Icons.MailIcon className="h-5 w-5 " />
               </button>
               <button
-                onClick={archiveSelectedMessages}
+                onClick={archiveMessages}
                 className="-mx-2 rounded px-2 py-1 text-slate-400 hover:text-slate-500 active:bg-slate-200"
               >
                 <Icons.ArchiveIcon className="h-5 w-5" />
@@ -62,9 +62,9 @@ export default function Email() {
             <AnimatePresence initial={false}>
               {[...messages].reverse().map((mid) => (
                 <motion.li
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
                   transition={{ opacity: { duration: 0.2 } }}
                   key={mid}
                   className="relative"
@@ -76,7 +76,7 @@ export default function Email() {
                         selectedMessages.includes(mid)
                           ? "bg-blue-500"
                           : "hover:bg-slate-200"
-                      } block w-full cursor-pointer truncate rounded py-3 px-3 text-left `}
+                      } block w-full cursor-pointer truncate rounded py-3 px-3 text-left`}
                     >
                       <p
                         className={`${
