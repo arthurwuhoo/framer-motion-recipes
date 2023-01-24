@@ -5,11 +5,18 @@ import { createContext } from "react";
 import { useContext } from "react";
 import useMeasure from "react-use-measure";
 
-let transition = { type: "ease", ease: "easeInOut", duration: 0.4 };
+let transition = { type: "ease", ease: "easeInOut", duration: 1 };
 
 export default function ResizablePanel() {
+  // sets the initial status of the panel to "idle"
   let [status, setStatus] = useState("idle");
   let [ref, bounds] = useMeasure();
+
+  let transition = {
+    type: "ease",
+    ease: "easeInOut",
+    duration: 0.4,
+  };
 
   return (
     <MotionConfig transition={transition}>
@@ -19,10 +26,15 @@ export default function ResizablePanel() {
             <div className="px-8 pt-8">
               <p className="text-lg text-white">Reset password</p>
             </div>
-
             <motion.div
-              animate={{ height: bounds.height > 0 ? bounds.height : null }}
-              transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
+              animate={{
+                height: bounds.height > 0 ? bounds.height : null,
+              }}
+              transition={{
+                duration: 0.4,
+                type: "spring",
+                bounce: 0.2,
+              }}
             >
               <div ref={ref}>
                 <AnimatePresence mode="popLayout">
@@ -60,13 +72,17 @@ export default function ResizablePanel() {
                     </motion.div>
                   ) : (
                     <motion.div
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                      }}
                       transition={{
                         ...transition,
                         duration: transition.duration / 2,
                         delay: transition.duration / 2,
                       }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
                     >
                       <p className="p-8 text-sm text-zinc-400">
                         Email sent! Check your inbox to continue.
@@ -77,6 +93,7 @@ export default function ResizablePanel() {
               </div>
             </motion.div>
           </div>
+
           <p className="mt-8 text-sm text-zinc-500">
             <span className="underline">Reach out</span> to us if you need more
             help.
